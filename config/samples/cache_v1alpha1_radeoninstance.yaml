@@ -1,0 +1,7 @@
+apiVersion: cache.amd.com/v1alpha1
+kind: RadeonInstance
+metadata:
+  name: radeoninstance-sample
+spec:
+  # Add fields here
+  foo: bar

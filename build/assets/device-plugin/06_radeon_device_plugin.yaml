@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: amdgpu-device-plugin-daemonset
+spec:
+  selector:
+    matchLabels:
+      name: amdgpu-dp-ds
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ""
+      labels:
+        name: amdgpu-dp-ds
+    spec:
+      nodeSelector:
+        feature.node.kubernetes.io/pci-1002.present: "true"
+      serviceAccount: radeon-instance
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      containers:
+      - image: rocm/k8s-device-plugin
+        name: amdgpu-dp-cntr
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+        volumeMounts:
+          - name: device-plugins
+            mountPath: /var/lib/kubelet/device-plugins
+          - name: host-sys
+            mountPath: /sys
+      volumes:
+        - name: device-plugins
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: host-sys
+          hostPath:
+            path: /sys
