@@ -13,7 +13,8 @@ WORKDIR /
 COPY --from=builder /workspace/radeon-operator .
 COPY build/assets /opt/device-plugin
 
-RUN useradd  -r -u 499 nonroot
-RUN getent group nonroot || groupadd -o -g 499 nonroot 
+RUN useradd cluster-nfd-operator
+USER cluster-nfd-operator
 
 ENTRYPOINT ["/radeon-operator"]
+LABEL io.k8s.display-name="radeon-operator"
